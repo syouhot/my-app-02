@@ -1,27 +1,33 @@
 'use server'
 
 import { db } from "@/db"
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation"
+import { preload } from "react-dom"
 
+
+interface SnippetState{
+    message: string;
+}
 export async function deleteSnippet(id: number) {
     await db.snippet.delete({
         where: {
             id,
         },
     })
+    revalidatePath('/')
     redirect('/')
 }
-
 
 export async function editSnippet(id: number, code: string) {
     const snippet = await db.snippet.update({
         where: { id },
         data: { code }
     })
-
+    revalidatePath('/snippets/' + id)
     redirect('/snippets/' + id)
 }
-export async function createSnippet(prevState: { message: string, payLoad: FormData }, formData: FormData) {
+export async function createSnippet(prevState: SnippetState, formData: FormData) {
     'use server'
     try {
         // throw new Error("error")
@@ -54,13 +60,15 @@ export async function createSnippet(prevState: { message: string, payLoad: FormD
     } catch (err) {
         if (err instanceof Error) {
             return {
-                message: err.message
+                message: err.message,
             }
         } else {
             return {
-                message: "unknown error"
+                message: "unknown error",
             }
         }
     }
+    // 重新验证,清除缓存
+    revalidatePath('/')
     redirect("/")
 }

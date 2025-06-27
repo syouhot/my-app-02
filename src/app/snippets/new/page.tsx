@@ -5,9 +5,12 @@ import { redirect } from 'next/navigation';
 import React, { useActionState } from 'react'
 import { useFormState, useFormStatus } from 'react-dom';
 
-const initSate = {
-    message: '',
-    payLoad: new FormData(),
+interface SnippetState{
+    message: string;
+    payLoad?: FormData;
+}
+const initSate :SnippetState= {
+    message: ''
 }
 
 export default function Page() {
@@ -15,7 +18,7 @@ export default function Page() {
     const { pending } = useFormStatus();
     // 安全获取表单值作为字符串
     const getFormValue = (key: string) => {
-        const value = state.payLoad?.get(key);
+        const value = state.payLoad?.get(key)
         return typeof value === 'string' ? value : '';
     }
     

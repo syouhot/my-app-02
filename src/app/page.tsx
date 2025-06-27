@@ -1,3 +1,6 @@
+// export const revalidate = 0;
+// export const dynamic = 'force-dynamic';
+
 import { db } from '@/db'
 import Link from 'next/link'
 import React from 'react'

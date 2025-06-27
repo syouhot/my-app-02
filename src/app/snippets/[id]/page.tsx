@@ -29,3 +29,10 @@ export default async function Page({ params }: SnippetProps) {
         </>
     )
 }
+//这种方式会导致更新后的页面不会被刷新
+export async function generateStaticParams() {
+    const snippets = await db.snippet.findMany()
+    return snippets.map(snippet => ({
+        id: snippet.id.toString()
+    }))
+}
